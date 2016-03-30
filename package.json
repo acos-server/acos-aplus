@@ -1,7 +1,7 @@
 {
-  "name": "acos-pitt",
+  "name": "acos-aplus",
   "version": "0.1.0",
-  "description": "Acos communication protocol to Pittsburgh University",
+  "description": "Acos communication protocol to A+ learning management system",
   "main": "index.js",
   "scripts": {
   },
