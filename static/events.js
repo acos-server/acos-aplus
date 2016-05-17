@@ -3,9 +3,9 @@
 
   var ACOS = function() {};
 
-  ACOS.sendEvent = function(event, payload) {
+  ACOS.sendEvent = function(event, payload, cb) {
 
-    var protocolData = { "submissionURL": $('input[name="submission_url"]').attr('value') };
+    var protocolData = { 'submissionURL': $('input[name="submission_url"]').attr('value') };
 
     var target = window.location.pathname;
     if (target[target.length - 1] == '/') {
@@ -15,9 +15,9 @@
     //TODO: error handling
 
     var data = {
-      "event": event,
-      "payload": JSON.stringify(payload),
-      "protocolData": JSON.stringify(protocolData)
+      'event': event,
+      'payload': JSON.stringify(payload),
+      'protocolData': JSON.stringify(protocolData)
     };
 
     if (event === 'log' && window.AcosLogging && AcosLogging.logkey && AcosLogging.loggingSession) {
@@ -28,14 +28,13 @@
     if (event === 'log' && window.AcosLogging && AcosLogging.noLogging) {
       return;
     } else {
-      $.post(target + "/event", {
-        "event": event,
-        "payload": JSON.stringify(payload),
-        "protocolData": JSON.stringify(protocolData)
-      }).done(function(response) {
-        if (event == 'grade') {
+      $.post(target + "/event", data).done(function(response) {
+        if (event === 'grade') {
           // Update the points view
           window.parent.postMessage({ type: 'a-plus-refresh-stats' }, "*");
+        }
+        if (cb) {
+          cb(response.content);
         }
       }).fail(function(jqXHR, text) {
         console.log(jqXHR, text);

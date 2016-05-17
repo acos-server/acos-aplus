@@ -13,8 +13,10 @@ ACOSAPlus.addToHead = function(params, req, contentPackage) {
   }
 
   // A+ can fetch this metadata automatically when adding exercises
-  params.headContent += '<meta content="' + contentPackage.meta.contents[req.params.name].title + '" name="DC.Title">';
-  params.headContent += '<meta content="' + contentPackage.meta.contents[req.params.name].description + '" name="DC.Description">';
+  if (contentPackage.meta.contents[req.params.name].title && contentPackage.meta.contents[req.params.name].description) {
+    params.headContent += '<meta content="' + contentPackage.meta.contents[req.params.name].title + '" name="DC.Title">';
+    params.headContent += '<meta content="' + contentPackage.meta.contents[req.params.name].description + '" name="DC.Description">';
+  }
 
   return true;
 };
@@ -52,7 +54,7 @@ ACOSAPlus.initialize = function(req, params, handlers, cb) {
 
 };
 
-ACOSAPlus.handleEvent = function(event, payload, req, res, protocolData) {
+ACOSAPlus.handleEvent = function(event, payload, req, res, protocolData, responseObj, cb) {
   if (event == 'grade') {
 
     var endpoint = url.parse(protocolData.submissionURL);
@@ -76,19 +78,22 @@ ACOSAPlus.handleEvent = function(event, payload, req, res, protocolData) {
 
     var request = protocol.request(options, function(result) {
       if (result.statusCode == 200) {
-        res.json({ 'status': 'OK' });
+        res.json({ 'status': 'OK', 'protocol': responseObj.protocol, 'content': responseObj.content });
       } else {
-        res.json({ 'status': 'ERROR' });
+        res.json({ 'status': 'ERROR', 'protocol': responseObj.protocol, 'content': responseObj.content });
       }
+      cb(event, payload, req, res, protocolData, responseObj);
     }).on('error', function(e) {
-      res.json({ 'status': 'ERROR' });
+      res.json({ 'status': 'ERROR', 'protocol': responseObj.protocol, 'content': responseObj.content });
+      cb(event, payload, req, res, protocolData, responseObj);
     });
 
     request.write(postData);
     request.end();
 
   } else {
-    res.json({ 'status': 'OK' });
+    res.json({ 'status': 'OK', 'protocol': responseObj.protocol, 'content': responseObj.content });
+    cb(event, payload, req, res, protocolData, responseObj);
   }
 
 };
@@ -106,7 +111,7 @@ ACOSAPlus.meta = {
   'description': '',
   'author': 'Teemu Sirkiä, Lassi Haaranen',
   'license': 'MIT',
-  'version': '0.1.0',
+  'version': '0.2.0',
   'url': ''
 };
 
