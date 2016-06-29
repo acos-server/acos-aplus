@@ -1,6 +1,6 @@
 {
   "name": "acos-aplus",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Acos communication protocol to A+ learning management system",
   "main": "index.js",
   "scripts": {},
