@@ -71,7 +71,7 @@ ACOSAPlus.handleEvent = function(event, payload, req, res, protocolData, respons
     };
 
     var protocol = http;
-    if (endpoint.protocol == 'https') {
+    if (endpoint.protocol.indexOf('https') >= 0) {
       protocol = https;
       options.port = endpoint.port || 443;
     }
