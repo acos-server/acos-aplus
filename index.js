@@ -24,10 +24,14 @@ ACOSAPlus.addToHead = function(params, req, contentPackage) {
 ACOSAPlus.addToBody = function(params, req) {
 
   if (req.query.content !== 'ready') {
-    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl + '&content=ready';
+    var hostUrl = req.protocol + '://' + req.get('host');
+    var fullUrl = hostUrl + req.originalUrl + '&content=ready';
     var width = req.query.width || 770;
     var height = req.query.height || 500;
-    params.bodyContent += '<iframe id="iframe" src="' + fullUrl + '" width="' + width + '" height="' + height + '" style="box-shadow: none; border: none;"></iframe>\n';
+    params.bodyContent += '<iframe class="acos-iframe" src="' + fullUrl + '" width="' + width + '" height="' + height + '" style="box-shadow: none; border: none;"></iframe>\n';
+    if (!req.query.noResizeIframe) {
+      params.bodyContent += '<script src="' + hostUrl + '/static/aplus/resizeiframe.js" type="text/javascript"></script>\n';
+    }
   } else {
     // This will be inside the previously created iframe
     params.bodyContent += '<input type="hidden" name="submission_url" value="' + req.query.submission_url + '">\n';
