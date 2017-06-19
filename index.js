@@ -80,11 +80,13 @@ ACOSAPlus.handleEvent = function(event, payload, req, res, protocolData, respons
       if (result.statusCode == 200) {
         res.json({ 'status': 'OK', 'protocol': responseObj.protocol, 'content': responseObj.content });
       } else {
-        res.json({ 'status': 'ERROR', 'protocol': responseObj.protocol, 'content': responseObj.content });
+        res.json({ 'status': 'ERROR', 'protocol': responseObj.protocol, 'content': responseObj.content,
+                   'error': 'A+/LMS responded ' + result.statusCode });
       }
       cb(event, payload, req, res, protocolData, responseObj);
     }).on('error', function(e) {
-      res.json({ 'status': 'ERROR', 'protocol': responseObj.protocol, 'content': responseObj.content });
+      res.json({ 'status': 'ERROR', 'protocol': responseObj.protocol, 'content': responseObj.content,
+                 'error': e.toString() });
       cb(event, payload, req, res, protocolData, responseObj);
     });
 
