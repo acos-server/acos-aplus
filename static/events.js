@@ -50,7 +50,7 @@
             'status': 'ERROR',
             'error': errorThrown.toString(),
           };
-          cb('', error);
+          cb(null, error);
         }
       });
     }
