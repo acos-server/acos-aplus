@@ -14,12 +14,12 @@ document.addEventListener("DOMContentLoaded", function() {
   };
 
   if (typeof require === 'function') {
-    // in Moodle
+    // in a require.js environment, import jQuery
     require(["jquery"], function(jQuery) {
       init(jQuery, window, document);
     });
   } else {
-    // in A+
+    // in A+ (jQuery defined in the global namespace)
     init(jQuery, window, document);
   }
 });
