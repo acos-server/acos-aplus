@@ -34,10 +34,24 @@
           window.parent.postMessage({ type: 'a-plus-refresh-stats' }, "*");
         }
         if (cb) {
-          cb(response.content);
+          var error = null;
+          if (response.status !== 'OK') {
+            error = {
+              'status': response.status,
+              'error': response.error, // error message (string)
+            };
+          }
+          cb(response.content, error);
         }
-      }).fail(function(jqXHR, text) {
+      }).fail(function(jqXHR, text, errorThrown) {
         console.log(jqXHR, text);
+        if (cb) {
+          var error = {
+            'status': 'ERROR',
+            'error': errorThrown.toString(),
+          };
+          cb(null, error);
+        }
       });
     }
 
