@@ -5,7 +5,10 @@
 
   ACOS.sendEvent = function(event, payload, cb) {
 
-    var protocolData = { 'submissionURL': $('input[name="submission_url"]').attr('value') };
+    var protocolData = {
+      'submissionURL': $('input[name="submission_url"]').attr('value'),
+      'uid': $('input[name="uid"]').attr('value'),
+    };
 
     var target = window.location.pathname;
     if (target[target.length - 1] == '/') {

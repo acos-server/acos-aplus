@@ -3,6 +3,7 @@ var https = require('https');
 var util = require('util');
 var querystring = require('querystring');
 var url = require('url');
+var crypto = require('crypto');
 
 var ACOSAPlus = function() {};
 
@@ -40,6 +41,16 @@ ACOSAPlus.addToBody = function(params, req) {
   } else {
     // This will be inside the previously created iframe
     params.bodyContent += '<input type="hidden" name="submission_url" value="' + req.query.submission_url + '">\n';
+    
+    // Hash the user ID (uid) parameter so that, if it is written to ACOS logs,
+    // it is not possible to trace it back to the A+ user id and the real identity of the user.
+    // However, the same user has the same ID in the ACOS logs across exercises so that
+    // the user's progress in the course may be investigated.
+    var uid = req.query.uid;
+    if (uid) {
+      var hash = crypto.createHash('sha1').update(uid);
+      params.bodyContent += '<input type="hidden" name="uid" value="' + hash.digest('hex') + '">\n';
+    }
   }
 
   return true;
