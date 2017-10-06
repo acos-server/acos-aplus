@@ -10,6 +10,9 @@ ACOSAPlus.addToHead = function(params, req, contentPackage) {
   if (req.query.content === 'ready') {
     params.headContent += '<script src="/static/aplus/jquery.min.js" type="text/javascript"></script>\n';
     params.headContent += '<script src="/static/aplus/events.js" type="text/javascript"></script>\n';
+    if (!req.query.noResizeIframe) {
+      params.headContent += '<script src="/static/aplus/resize-in-frame-util.js" type="text/javascript"></script>\n';
+    }
   }
 
   // A+ can fetch this metadata automatically when adding exercises
@@ -26,10 +29,12 @@ ACOSAPlus.addToBody = function(params, req) {
   if (req.query.content !== 'ready') {
     var hostUrl = req.protocol + '://' + req.get('host');
     var fullUrl = hostUrl + req.originalUrl + '&content=ready';
-    var width = req.query.width || 770;
+    var width = req.query.width || 600;
     var height = req.query.height || 500;
-    params.bodyContent += '<iframe class="acos-iframe" src="' + fullUrl + '" width="' + width + '" height="' + height + '" style="box-shadow: none; border: none;"></iframe>\n';
-    if (!req.query.noResizeIframe) {
+    if (req.query.noResizeIframe) {
+      params.bodyContent += '<iframe class="acos-iframe" src="' + fullUrl + '" width="' + width + '" height="' + height + '" style="box-shadow: none; border: none;"></iframe>\n';
+    } else {
+      params.bodyContent += '<iframe class="acos-iframe" src="' + fullUrl + '" style="box-shadow: none; border: none; width: 100%;"></iframe>\n';
       params.bodyContent += '<script src="' + hostUrl + '/static/aplus/resizeiframe.js" type="text/javascript"></script>\n';
     }
   } else {
