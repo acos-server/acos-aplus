@@ -3,6 +3,7 @@ var https = require('https');
 var util = require('util');
 var querystring = require('querystring');
 var url = require('url');
+var htmlencode = require('htmlencode').htmlEncode;
 
 var ACOSAPlus = function() {};
 
@@ -39,12 +40,12 @@ ACOSAPlus.addToBody = function(params, req) {
     }
   } else {
     // This will be inside the previously created iframe
-    params.bodyContent += '<input type="hidden" name="submission_url" value="' + req.query.submission_url + '">\n';
+    params.bodyContent += '<input type="hidden" name="submission_url" value="' + htmlencode(req.query.submission_url) + '">\n';
     
     // include the user ID (uid) parameter so that it may be used in the ACOS logs
     var uid = req.query.uid;
     if (uid) {
-      params.bodyContent += '<input type="hidden" name="uid" value="' + uid + '">\n';
+      params.bodyContent += '<input type="hidden" name="uid" value="' + htmlencode(uid) + '">\n';
     }
   }
 
