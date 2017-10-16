@@ -3,6 +3,7 @@ var https = require('https');
 var util = require('util');
 var querystring = require('querystring');
 var url = require('url');
+var htmlencode = require('htmlencode').htmlEncode;
 
 var ACOSAPlus = function() {};
 
@@ -10,6 +11,9 @@ ACOSAPlus.addToHead = function(params, req, contentPackage) {
   if (req.query.content === 'ready') {
     params.headContent += '<script src="/static/aplus/jquery.min.js" type="text/javascript"></script>\n';
     params.headContent += '<script src="/static/aplus/events.js" type="text/javascript"></script>\n';
+    if (!req.query.noResizeIframe) {
+      params.headContent += '<script src="/static/aplus/resize-in-frame-util.js" type="text/javascript"></script>\n';
+    }
   }
 
   // A+ can fetch this metadata automatically when adding exercises
@@ -26,15 +30,23 @@ ACOSAPlus.addToBody = function(params, req) {
   if (req.query.content !== 'ready') {
     var hostUrl = req.protocol + '://' + req.get('host');
     var fullUrl = hostUrl + req.originalUrl + '&content=ready';
-    var width = req.query.width || 770;
-    var height = req.query.height || 500;
-    params.bodyContent += '<iframe class="acos-iframe" src="' + fullUrl + '" width="' + width + '" height="' + height + '" style="box-shadow: none; border: none;"></iframe>\n';
-    if (!req.query.noResizeIframe) {
+    var width = +req.query.width || 600;
+    var height = +req.query.height || 500;
+    if (req.query.noResizeIframe) {
+      params.bodyContent += '<iframe class="acos-iframe" src="' + fullUrl + '" width="' + width + '" height="' + height + '" style="box-shadow: none; border: none;"></iframe>\n';
+    } else {
+      params.bodyContent += '<iframe class="acos-iframe" src="' + fullUrl + '" style="box-shadow: none; border: none; width: 100%;"></iframe>\n';
       params.bodyContent += '<script src="' + hostUrl + '/static/aplus/resizeiframe.js" type="text/javascript"></script>\n';
     }
   } else {
     // This will be inside the previously created iframe
-    params.bodyContent += '<input type="hidden" name="submission_url" value="' + req.query.submission_url + '">\n';
+    params.bodyContent += '<input type="hidden" name="submission_url" value="' + htmlencode(req.query.submission_url) + '">\n';
+    
+    // include the user ID (uid) parameter so that it may be used in the ACOS logs
+    var uid = req.query.uid;
+    if (uid) {
+      params.bodyContent += '<input type="hidden" name="uid" value="' + htmlencode(uid) + '">\n';
+    }
   }
 
   return true;
