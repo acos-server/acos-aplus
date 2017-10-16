@@ -30,8 +30,8 @@ ACOSAPlus.addToBody = function(params, req) {
   if (req.query.content !== 'ready') {
     var hostUrl = req.protocol + '://' + req.get('host');
     var fullUrl = hostUrl + req.originalUrl + '&content=ready';
-    var width = req.query.width || 600;
-    var height = req.query.height || 500;
+    var width = +req.query.width || 600;
+    var height = +req.query.height || 500;
     if (req.query.noResizeIframe) {
       params.bodyContent += '<iframe class="acos-iframe" src="' + fullUrl + '" width="' + width + '" height="' + height + '" style="box-shadow: none; border: none;"></iframe>\n';
     } else {
