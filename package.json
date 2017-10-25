@@ -9,5 +9,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/acos-server/acos-aplus.git"
+  },
+  "dependencies": {
+    "htmlencode": "0.0.4"
   }
 }
