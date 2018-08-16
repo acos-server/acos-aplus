@@ -26,6 +26,10 @@ var initAcosAplusResizeIframe = function($, window, document) {
       }
       iframes[this.element.attr('id')] = this;
       
+      // set a large initial height for the iframe, which may be decreased
+      // when the frame has computed its content's real height
+      this.element.attr('height', 0.9 * $(window).height());
+
       // send a message to embedded ACOS iframe: the response message should announce its desired height
       // the iframes have the style "width: 100%", thus the width is updated automatically
       this.postMessageToIframe();
@@ -48,8 +52,8 @@ var initAcosAplusResizeIframe = function($, window, document) {
 
     resizeIframe: function(newHeight) {
       // prevent the iframe from growing higher than the window viewport unless the window is very small
-      var maxH = Math.max(0.8 * $(window).height(), 300);
-      var minH = 150;
+      var maxH = Math.max(0.9 * $(window).height(), 300);
+      var minH = 200;
       newHeight = Math.max(newHeight, minH);
       newHeight = Math.min(newHeight, maxH);
       this.element.attr('height', newHeight);
