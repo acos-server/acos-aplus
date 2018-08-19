@@ -3,6 +3,7 @@
 // this script replies to messages from the parent window with the height of this document
 
 var getHeight = function() {
+  if (!document.body) return 0;
   var style = window.getComputedStyle(document.body);
   var marginTop = parseInt(style.getPropertyValue('margin-top'), 10);
   var marginBottom = parseInt(style.getPropertyValue('margin-bottom'), 10);
@@ -13,7 +14,7 @@ var getHeight = function() {
   // the body height can not take fixed position elements into account
   
   // add some extra height so that there is room for changes in the DOM
-  return windowHeight + 150;
+  return windowHeight + 160;
 };
 
 window.addEventListener("message", function(ev) {
@@ -23,7 +24,9 @@ window.addEventListener("message", function(ev) {
       iframeid: ev.data.iframeid,
       type: 'acos-resizeiframe-size',
     };
-    ev.source.postMessage(responseData, ev.origin);
+    if (responseData.height) {
+      ev.source.postMessage(responseData, ev.origin);
+    }
   }
 }, false);
 
