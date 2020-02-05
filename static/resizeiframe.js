@@ -50,12 +50,14 @@ var initAcosAplusResizeIframe = function($, window, document) {
       this.frameWindow.postMessage(data, '*');
     },
 
-    resizeIframe: function(newHeight) {
+    resizeIframe: function(newHeight, exact) {
       // prevent the iframe from growing higher than the window viewport unless the window is very small
-      var maxH = Math.max(0.9 * $(window).height(), 300);
-      var minH = 200;
-      newHeight = Math.max(newHeight, minH);
-      newHeight = Math.min(newHeight, maxH);
+      if (!exact) {
+        var maxH = Math.max(0.9 * $(window).height(), 300);
+        var minH = 200;
+        newHeight = Math.max(newHeight, minH);
+        newHeight = Math.min(newHeight, maxH);
+      }
       this.element.attr('height', newHeight);
     },
   });
@@ -85,7 +87,7 @@ var initAcosAplusResizeIframe = function($, window, document) {
           return;
         var h = parseInt(ev.data.height);
         if (!isNaN(h)) {
-          instance.resizeIframe(h);
+          instance.resizeIframe(h, ev.data.exact);
         }
       }
     }
