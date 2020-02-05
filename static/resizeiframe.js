@@ -25,7 +25,7 @@ var initAcosAplusResizeIframe = function($, window, document) {
         this.element.attr('id', pluginName + counter++);
       }
       iframes[this.element.attr('id')] = this;
-      
+
       // set a large initial height for the iframe, which may be decreased
       // when the frame has computed its content's real height
       this.element.attr('height', 0.9 * $(window).height());
@@ -33,7 +33,7 @@ var initAcosAplusResizeIframe = function($, window, document) {
       // send a message to embedded ACOS iframe: the response message should announce its desired height
       // the iframes have the style "width: 100%", thus the width is updated automatically
       this.postMessageToIframe();
-      
+
       // if the iframe has not loaded yet, it does not receive any messages, so wait for it to load
       // load event does not work in all browsers
       // the in-frame script also sends an init message if this outer window can not detect when the iframe has loaded
@@ -77,7 +77,7 @@ var initAcosAplusResizeIframe = function($, window, document) {
           break;
         }
       }
-      
+
     } else if (ev.data.type === 'acos-resizeiframe-size') {
       if (ev.data.height && ev.data.iframeid) {
         var instance = iframes[ev.data.iframeid];
@@ -93,11 +93,14 @@ var initAcosAplusResizeIframe = function($, window, document) {
   window.addEventListener("message", resizeMessageHandler, false);
 
   // initialize
-  $('.acos-iframe').each(function() {
-    if (!$.data(this, "plugin_" + pluginName)) {
-      $.data(this, "plugin_" + pluginName, new AcosAplusResizeIframe(this));
-    };
-  });
+  var init = function () {
+    $('.acos-iframe').each(function() {
+      if (!$.data(this, "plugin_" + pluginName)) {
+        $.data(this, "plugin_" + pluginName, new AcosAplusResizeIframe(this));
+      };
+    });
+  };
+  init();
 
   // when the window (of the outermost document) is resized, ask the iframes to announce their new heights
   $(window).on('resize', function() {
@@ -107,19 +110,29 @@ var initAcosAplusResizeIframe = function($, window, document) {
       }
     }
   });
+
+  return init;
 };
 
+var initOnce = function (jQuery, window, document) {
+  var init = $.data(window, 'initAcosAplusResizeIframe');
+  if (init) {
+    init();
+  } else {
+    $.data(window, 'initAcosAplusResizeIframe', initAcosAplusResizeIframe(jQuery, window, document));
+  }
+};
 
 var pageLoadedHandler = function() {
   // the DOM is ready so we may load jQuery in a safe way
   if (typeof require === 'function') {
     // in a require.js environment, import jQuery
     require(["jquery"], function(jQuery) {
-      initAcosAplusResizeIframe(jQuery, window, document);
+      initOnce(jQuery, window, document);
     });
   } else {
     // in A+ (jQuery defined in the global namespace)
-    initAcosAplusResizeIframe(jQuery, window, document);
+    initOnce(jQuery, window, document);
   }
 };
 
