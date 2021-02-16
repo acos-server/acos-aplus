@@ -17,7 +17,7 @@ ACOSAPlus.addToHead = function(params, req, contentPackage) {
   }
 
   // A+ can fetch this metadata automatically when adding exercises
-  if (contentPackage.meta.contents[req.params.name].title && contentPackage.meta.contents[req.params.name].description) {
+  if (contentPackage.meta.contents[req.params.name] && contentPackage.meta.contents[req.params.name].title && contentPackage.meta.contents[req.params.name].description) {
     params.headContent += '<meta content="' + contentPackage.meta.contents[req.params.name].title + '" name="DC.Title">';
     params.headContent += '<meta content="' + contentPackage.meta.contents[req.params.name].description + '" name="DC.Description">';
   }
