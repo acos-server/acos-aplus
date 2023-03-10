@@ -47,6 +47,10 @@ ACOSAPlus.addToBody = function(params, req) {
     if (uid) {
       params.bodyContent += '<input type="hidden" name="uid" value="' + htmlencode(uid) + '">\n';
     }
+    var lti_launch_id = req.query.lti_launch_id;
+    if (lti_launch_id) {
+      params.bodyContent += '<input type="hidden" name="lti_launch_id" value="' + htmlencode(lti_launch_id) + '">\n';
+    }
   }
 
   return true;

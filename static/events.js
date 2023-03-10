@@ -12,6 +12,10 @@
     if (uid) {
       protocolData.uid = uid;
     }
+    var lti_launch_id = $('input[name="lti_launch_id"]').attr('value');
+    if (lti_launch_id) {
+      payload.lti_launch_id = lti_launch_id;
+    }
 
     var target = window.location.pathname;
     if (target[target.length - 1] == '/') {
