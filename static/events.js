@@ -16,6 +16,10 @@
     if (lti_launch_id) {
       payload.lti_launch_id = lti_launch_id;
     }
+    var lti_session_id = $('input[name="lti_session_id"]').attr('value');
+    if (lti_session_id) {
+      payload.lti_session_id = lti_session_id;
+    }
 
     var target = window.location.pathname;
     if (target[target.length - 1] == '/') {
